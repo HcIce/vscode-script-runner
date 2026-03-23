@@ -1,0 +1,75 @@
+{
+  "name": "vscode-script-runner",
+  "displayName": "VSCode Script Runner",
+  "description": "Show an editor title button for package.json scripts and run them in a new terminal.",
+  "version": "0.0.1",
+  "publisher": "local",
+  "private": true,
+  "license": "UNLICENSED",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/HcIce/vscode-script-runner.git"
+  },
+  "homepage": "https://github.com/HcIce/vscode-script-runner",
+  "bugs": {
+    "url": "https://github.com/HcIce/vscode-script-runner/issues"
+  },
+  "files": [
+    "out/**/*",
+    "resources/**/*",
+    "package.json",
+    "README.md",
+    "LICENSE.txt"
+  ],
+  "engines": {
+    "vscode": "^1.110.0"
+  },
+  "categories": [
+    "Other"
+  ],
+  "activationEvents": [
+    "onStartupFinished",
+    "onCommand:localScriptsRunner.pickAndRunScript"
+  ],
+  "main": "./out/extension.js",
+  "contributes": {
+    "commands": [
+      {
+        "command": "localScriptsRunner.pickAndRunScript",
+        "title": "Run npm Script",
+        "category": "Local Scripts Runner",
+        "icon": {
+          "light": "resources/run-light.svg",
+          "dark": "resources/run-dark.svg"
+        }
+      }
+    ],
+    "menus": {
+      "editor/title": [
+        {
+          "command": "localScriptsRunner.pickAndRunScript",
+          "when": "localScriptsRunner.hasRootPackageJson && editorTextFocus",
+          "group": "navigation@100"
+        }
+      ],
+      "commandPalette": [
+        {
+          "command": "localScriptsRunner.pickAndRunScript",
+          "when": "localScriptsRunner.hasRootPackageJson"
+        }
+      ]
+    }
+  },
+  "scripts": {
+    "compile": "tsc -p ./",
+    "watch": "tsc -watch -p ./",
+    "vscode:prepublish": "npm run compile",
+    "package:vsix": "vsce package --out vscode-script-runner-0.0.1.vsix"
+  },
+  "devDependencies": {
+    "@types/node": "^24.0.0",
+    "@types/vscode": "^1.110.0",
+    "@vscode/vsce": "^3.7.1",
+    "typescript": "^5.9.3"
+  }
+}

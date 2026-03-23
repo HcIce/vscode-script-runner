@@ -1,0 +1,3 @@
+Local use only.
+
+This extension is intended for personal/local installation and is not published for public distribution.
