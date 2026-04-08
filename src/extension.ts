@@ -10,32 +10,16 @@ interface ScriptPickItem extends vscode.QuickPickItem {
 }
 
 const COMMAND_ID = "localScriptsRunner.pickAndRunScript";
-const CONTEXT_KEY = "localScriptsRunner.hasRootPackageJson";
-
-let packageWatcher: vscode.FileSystemWatcher | undefined;
 
 export async function activate(context: vscode.ExtensionContext): Promise<void> {
-  const refreshContext = async () => {
-    await updatePackageContext();
-  };
-
   context.subscriptions.push(
     vscode.commands.registerCommand(COMMAND_ID, async () => {
       await pickAndRunScript();
     }),
-    vscode.workspace.onDidChangeWorkspaceFolders(() => {
-      resetPackageWatcher(refreshContext);
-      void refreshContext();
-    }),
   );
-
-  resetPackageWatcher(refreshContext);
-  await refreshContext();
 }
 
-export function deactivate(): void {
-  packageWatcher?.dispose();
-}
+export function deactivate(): void {}
 
 async function pickAndRunScript(): Promise<void> {
   const packageInfo = await readRootPackageInfo();
@@ -82,38 +66,6 @@ async function pickAndRunScript(): Promise<void> {
 
   terminal.show();
   terminal.sendText(`npm run ${picked.scriptName}`, true);
-}
-
-function resetPackageWatcher(refreshContext: () => Promise<void>): void {
-  packageWatcher?.dispose();
-
-  const rootPath = getWorkspaceRootPath();
-  if (!rootPath) {
-    packageWatcher = undefined;
-    return;
-  }
-
-  packageWatcher = vscode.workspace.createFileSystemWatcher(
-    new vscode.RelativePattern(rootPath, "package.json"),
-  );
-
-  packageWatcher.onDidCreate(() => {
-    void refreshContext();
-  });
-  packageWatcher.onDidChange(() => {
-    void refreshContext();
-  });
-  packageWatcher.onDidDelete(() => {
-    void refreshContext();
-  });
-}
-
-async function updatePackageContext(): Promise<void> {
-  const packageInfo = await readRootPackageInfo();
-  const hasScripts =
-    packageInfo.reason === "ok" && Object.keys(packageInfo.scripts).length > 0;
-
-  await vscode.commands.executeCommand("setContext", CONTEXT_KEY, hasScripts);
 }
 
 function getWorkspaceRootPath(): string | undefined {

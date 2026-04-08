@@ -2,7 +2,7 @@
   "name": "vscode-script-runner",
   "displayName": "VSCode Script Runner",
   "description": "Show an editor title button for package.json scripts and run them in a new terminal.",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "publisher": "local",
   "private": true,
   "license": "UNLICENSED",
@@ -48,14 +48,12 @@
       "editor/title": [
         {
           "command": "localScriptsRunner.pickAndRunScript",
-          "when": "localScriptsRunner.hasRootPackageJson && editorTextFocus",
           "group": "navigation@100"
         }
       ],
       "commandPalette": [
         {
-          "command": "localScriptsRunner.pickAndRunScript",
-          "when": "localScriptsRunner.hasRootPackageJson"
+          "command": "localScriptsRunner.pickAndRunScript"
         }
       ]
     }
@@ -64,7 +62,7 @@
     "compile": "tsc -p ./",
     "watch": "tsc -watch -p ./",
     "vscode:prepublish": "npm run compile",
-    "package:vsix": "vsce package --out vscode-script-runner-0.0.1.vsix"
+    "package:vsix": "vsce package"
   },
   "devDependencies": {
     "@types/node": "^24.0.0",
